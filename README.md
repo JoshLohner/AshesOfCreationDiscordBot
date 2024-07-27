@@ -6,3 +6,13 @@
 
 ## Future Goal: 
  Link with the Ashes Wiki
+
+
+
+
+
+
+
+ ### Links
+  Discord Dev Portal: https://discord.com/developers/docs/quick-start/getting-started
+  
