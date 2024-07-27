@@ -15,4 +15,6 @@
 
  ### Links
   Discord Dev Portal: https://discord.com/developers/docs/quick-start/getting-started
-  
+
+### Notes
+ to run: node index.js
