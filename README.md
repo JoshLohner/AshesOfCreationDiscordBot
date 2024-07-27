@@ -6,7 +6,8 @@
 
 ## Future Goal: 
  Link with the Ashes Wiki
-
+ Party Creation
+ Player market/auction
 
 
 
