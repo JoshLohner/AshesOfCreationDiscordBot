@@ -6,7 +6,8 @@
 
 ## Future Goal: 
  Link with the Ashes Wiki
-
+ Party Creation
+ Player market/auction
 
 
 
@@ -15,4 +16,6 @@
 
  ### Links
   Discord Dev Portal: https://discord.com/developers/docs/quick-start/getting-started
-  
+
+### Notes
+ to run: node index.js
