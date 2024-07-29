@@ -1,14 +1,8 @@
 // Import necessary classes and constants from discord.js
-const { Routes, SlashCommandBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType } = require('discord.js');
+const { Routes, SlashCommandBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, EmbedBuilder } = require('discord.js');
 
 // Define the slash commands to be registered
 const commands = [
-    new SlashCommandBuilder()
-        .setName('bye') // Command name
-        .setDescription('Sends a goodbye'),
-    new SlashCommandBuilder()
-        .setName('hi') // Command name
-        .setDescription('Sends a Hello message'),  // Command description
     new SlashCommandBuilder()
         .setName('partycreate')
         .setDescription('Format: /partycreate activity size description')
@@ -30,14 +24,14 @@ const commands = [
 ].map(command => command.toJSON()); // Convert commands to JSON format
 
 // Function to register the slash commands
-async function registerCommands(rest, clientId) {
+async function registerCommands(rest, clientId, guildId) {
     try {
         console.log('Started refreshing application (/) commands.');
 
-        // Register the commands with the Discord API
+        // Register the commands with the Discord API for a specific guild
         await rest.put(
-            Routes.applicationCommands(clientId),
-            { body: commands },
+            Routes.applicationGuildCommands(clientId, guildId),
+            { body: commands }
         );
 
         console.log('Successfully reloaded application (/) commands.');
@@ -50,36 +44,25 @@ async function registerCommands(rest, clientId) {
 async function handleInteraction(interaction) {
     if (!interaction.isCommand() && !interaction.isButton()) return; // Ignore non-command and non-button interactions
 
-    const { commandName, options, channel } = interaction; // Destructure commandName and channel from the interaction
-
-    if (commandName === 'hi') {
-        await interaction.deferReply();
-        let greetingMessage = "Hello, World";
-        await interaction.editReply(greetingMessage); // Send a message to the same channel where the command was used
-    }
+    const { commandName, options } = interaction; // Destructure commandName and options from the interaction
 
     if (commandName === 'partycreate') {
         const activity = options.getString('activity');
         const size = options.getInteger('size');
         const description = options.getString('description');
         
-        let message = `Party created for ${activity}.`;
-        if (size) {
-            message += ` Max size: ${size}.`;
-        }
-        if (description) {
-            message += ` Description: ${description}.`;
-        }
+        let embed = new EmbedBuilder()
+            .setTitle('Party Created')
+            .setDescription(`Activity: ${activity}`)
+            .setColor(0x00AE86)
+            .addFields(
+                { name: 'Max Size', value: size ? size.toString() : 'No limit', inline: true },
+                { name: 'Description', value: description ? description : 'No description provided', inline: true }
+            );
 
-        // Acknowledge the interaction and send the message
+        // Acknowledge the interaction and send the embed message
         await interaction.deferReply();
-        await interaction.editReply(message);
-    }
-
-    if (commandName === 'bye') {
-        await interaction.deferReply();
-        let greetingMessage = "Goodbye, World";
-        await interaction.editReply(greetingMessage); // Send a message to the same channel where the command was used
+        await interaction.editReply({ embeds: [embed] });
     }
 
     if (commandName === 'eventcreate') {
@@ -90,9 +73,14 @@ async function handleInteraction(interaction) {
 
         const row = new ActionRowBuilder().addComponents(attendButton);
 
+        let embed = new EmbedBuilder()
+            .setTitle('Event Created')
+            .setDescription('Click the button to attend.')
+            .setColor(0x00AE86);
+
         await interaction.deferReply();
         const message = await interaction.editReply({
-            content: 'Event created! Click the button to attend.',
+            embeds: [embed],
             components: [row]
         });
 
@@ -105,8 +93,12 @@ async function handleInteraction(interaction) {
 
         collector.on('collect', async i => {
             attendanceCount++;
+            let updatedEmbed = new EmbedBuilder()
+                .setTitle('Event Created')
+                .setDescription(`Click the button to attend.\n${attendanceCount} people are attending.`)
+                .setColor(0x00AE86);
             await i.update({
-                content: `Event created! ${attendanceCount} people are attending.`,
+                embeds: [updatedEmbed],
                 components: [row]
             });
         });
