@@ -3,7 +3,7 @@ require('dotenv').config();
 
 // Import necessary classes and functions from discord.js and custom commands module
 const { Client, GatewayIntentBits, REST, Routes } = require('discord.js');
-const { registerCommands, handleInteraction } = require('./commands');
+const { resetCommands, handleInteraction } = require('./commands');
 
 // Create a new Discord client instance with specified intents
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
@@ -14,7 +14,11 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 // Event listener for when the client is ready and successfully logged in
 client.on('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`); // Log the bot's username and discriminator
-    await registerCommands(rest, client.user.id, process.env.GUILD_ID); // Register slash commands using the REST client, bot's user ID, and guild ID
+
+    // Reset and register slash commands using the REST client, bot's user ID, and guild ID
+    await resetCommands(rest, client.user.id, process.env.GUILD_ID);
+
+    console.log('Commands have been reset and re-registered.');
 });
 
 // Event listener for when an interaction is created (e.g., a slash command is used)
