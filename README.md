@@ -5,7 +5,7 @@
  Set up the bot with basic discord functionality
 
 ## Future Goal: 
- Link with the Ashes Wiki
+ Link with the Ashes Wiki (https://ashesofcreation.wiki/Special:ApiSandbox)
  Party Creation
  Player market/auction
 

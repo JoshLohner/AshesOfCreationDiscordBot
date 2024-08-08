@@ -40,6 +40,41 @@ async function registerCommands(rest, clientId, guildId) {
     }
 }
 
+// Function to reset commands
+async function resetCommands(rest, clientId, guildId) {
+    try {
+        console.log('Started resetting application (/) commands.');
+
+        // **Reset global commands**
+        // Fetch all existing global commands
+        const globalCommands = await rest.get(Routes.applicationCommands(clientId));
+
+        // Delete each global command
+        for (const command of globalCommands) {
+            await rest.delete(`${Routes.applicationCommands(clientId)}/${command.id}`);
+            console.log(`Deleted global command ${command.name}`);
+        }
+
+        // Reset guild commands
+        // Fetch all existing commands for the guild
+        const guildCommands = await rest.get(Routes.applicationGuildCommands(clientId, guildId));
+
+        // Delete each guild-specific command
+        for (const command of guildCommands) {
+            await rest.delete(`${Routes.applicationGuildCommands(clientId, guildId)}/${command.id}`);
+            console.log(`Deleted guild command ${command.name}`);
+        }
+
+        // Re-register the updated commands (guild-specific in this case)
+        await registerCommands(rest, clientId, guildId);
+
+        console.log('Successfully reset and reloaded application (/) commands.');
+    } catch (error) {
+        console.error(error); // Log any errors
+    }
+}
+
+
 // Function to handle interactions
 async function handleInteraction(interaction) {
     if (!interaction.isCommand() && !interaction.isButton()) return; // Ignore non-command and non-button interactions
@@ -110,4 +145,4 @@ async function handleInteraction(interaction) {
 }
 
 // Export the functions for use in other files
-module.exports = { registerCommands, handleInteraction };
+module.exports = { registerCommands, resetCommands, handleInteraction };
