@@ -3,24 +3,50 @@ const { Routes, SlashCommandBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilde
 
 // Define the slash commands to be registered
 const commands = [
+    
     new SlashCommandBuilder()
-        .setName('partycreate')
-        .setDescription('Format: /partycreate activity size description')
+        .setName('createparty')
+        .setDescription('Format')
         .addStringOption(option =>
-            option.setName('activity')
-                .setDescription('Why are you making a party?')
+            option.setName('purpose')
+                .setDescription('What reason are you making the party?')
                 .setRequired(true))
-        .addIntegerOption(option =>
-            option.setName('size')
-                .setDescription('Optional: What is the max size of the party?')
-                .setRequired(false))
         .addStringOption(option =>
-            option.setName('description')
-                .setDescription('Optional: Additional information?')
-                .setRequired(false)),
+            option.setName('gameplay_type')
+                .setDescription('What reason are you making the party?')
+                .setRequired(true)
+                .addChoices(
+                    { name: 'PvP', value: '0' },
+                    { name: 'PvE', value: '1' },
+                    { name: 'PvX', value: '2' },
+                    { name: 'Social', value: '3' },
+                    { name: 'Other', value: '4' }
+                )),
+
     new SlashCommandBuilder()
-        .setName('eventcreate')
-        .setDescription('Creates an event with an attend button')
+        .setName('createevent')
+        .setDescription('Format')
+        .addStringOption(option =>
+            option.setName('option')
+                .setDescription('1')
+                .setRequired(true)),
+
+    new SlashCommandBuilder()
+        .setName('createraidpve')
+        .setDescription('Format')
+        .addStringOption(option =>
+            option.setName('option')
+                .setDescription('2')
+                .setRequired(true)),
+
+    new SlashCommandBuilder()
+        .setName('createraidpvp')
+        .setDescription('Format')
+        .addStringOption(option =>
+            option.setName('option')
+                .setDescription('3')
+                .setRequired(true)),
+
 ].map(command => command.toJSON()); // Convert commands to JSON format
 
 // Function to register the slash commands
@@ -81,67 +107,30 @@ async function handleInteraction(interaction) {
 
     const { commandName, options } = interaction; // Destructure commandName and options from the interaction
 
-    if (commandName === 'partycreate') {
-        const activity = options.getString('activity');
-        const size = options.getInteger('size');
-        const description = options.getString('description');
+    if (commandName === 'createparty') {
+        await interaction.deferReply();
+        await interaction.editReply('Testing -createparty-');
         
-        let embed = new EmbedBuilder()
-            .setTitle('Party Created')
-            .setDescription(`Activity: ${activity}`)
-            .setColor(0x00AE86)
-            .addFields(
-                { name: 'Max Size', value: size ? size.toString() : 'No limit', inline: true },
-                { name: 'Description', value: description ? description : 'No description provided', inline: true }
-            );
-
-        // Acknowledge the interaction and send the embed message
-        await interaction.deferReply();
-        await interaction.editReply({ embeds: [embed] });
     }
 
-    if (commandName === 'eventcreate') {
-        const attendButton = new ButtonBuilder()
-            .setCustomId('attend')
-            .setLabel('Attend')
-            .setStyle(ButtonStyle.Primary);
-
-        const row = new ActionRowBuilder().addComponents(attendButton);
-
-        let embed = new EmbedBuilder()
-            .setTitle('Event Created')
-            .setDescription('Click the button to attend.')
-            .setColor(0x00AE86);
-
+    if (commandName === 'createevent') {
         await interaction.deferReply();
-        const message = await interaction.editReply({
-            embeds: [embed],
-            components: [row]
-        });
-
-        // Initialize attendance count
-        let attendanceCount = 0;
-
-        const filter = i => i.customId === 'attend' && i.message.id === message.id;
-
-        const collector = message.createMessageComponentCollector({ filter, componentType: ComponentType.Button, time: 60000 });
-
-        collector.on('collect', async i => {
-            attendanceCount++;
-            let updatedEmbed = new EmbedBuilder()
-                .setTitle('Event Created')
-                .setDescription(`Click the button to attend.\n${attendanceCount} people are attending.`)
-                .setColor(0x00AE86);
-            await i.update({
-                embeds: [updatedEmbed],
-                components: [row]
-            });
-        });
-
-        collector.on('end', collected => {
-            console.log(`Collected ${collected.size} interactions.`);
-        });
+        await interaction.editReply('Testing -createevent-');
+        
     }
+
+    if (commandName === 'createraidpvp') {
+        await interaction.deferReply();
+        await interaction.editReply('Testing -createraidpvp-');
+        
+    }
+
+    if (commandName === 'createraidpve') {
+        await interaction.deferReply();
+        await interaction.editReply('Testing -createraidpve-');
+        
+    }
+    
 }
 
 // Export the functions for use in other files
