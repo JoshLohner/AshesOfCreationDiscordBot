@@ -3,7 +3,7 @@ const { Routes, SlashCommandBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilde
 
 // Define the slash commands to be registered
 const commands = [
-    
+
     new SlashCommandBuilder()
         .setName('createparty')
         .setDescription('Format')
@@ -21,6 +21,12 @@ const commands = [
                     { name: 'PvX', value: '2' },
                     { name: 'Social', value: '3' },
                     { name: 'Other', value: '4' }
+                )
+                .addIntegerOption(option =>
+                    option.setName('your_integer_option')
+                        .setDescription('Description of the integer option')
+                        .setRequired(false)
+                        .setMaxValue(8)
                 )),
 
     new SlashCommandBuilder()
@@ -110,27 +116,27 @@ async function handleInteraction(interaction) {
     if (commandName === 'createparty') {
         await interaction.deferReply();
         await interaction.editReply('Testing -createparty-');
-        
+
     }
 
     if (commandName === 'createevent') {
         await interaction.deferReply();
         await interaction.editReply('Testing -createevent-');
-        
+
     }
 
     if (commandName === 'createraidpvp') {
         await interaction.deferReply();
         await interaction.editReply('Testing -createraidpvp-');
-        
+
     }
 
     if (commandName === 'createraidpve') {
         await interaction.deferReply();
         await interaction.editReply('Testing -createraidpve-');
-        
+
     }
-    
+
 }
 
 // Export the functions for use in other files
