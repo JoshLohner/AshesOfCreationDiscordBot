@@ -10,7 +10,8 @@ const commands = [
         .addStringOption(option =>
             option.setName('purpose')
                 .setDescription('What reason are you making the party?')
-                .setRequired(true))
+                .setRequired(true)
+            )
         .addStringOption(option =>
             option.setName('gameplay_type')
                 .setDescription('What reason are you making the party?')
@@ -22,12 +23,24 @@ const commands = [
                     { name: 'Social', value: '3' },
                     { name: 'Other', value: '4' }
                 )
-                .addIntegerOption(option =>
-                    option.setName('your_integer_option')
-                        .setDescription('Description of the integer option')
-                        .setRequired(false)
-                        .setMaxValue(8)
-                )),
+            )
+        .addIntegerOption(option =>
+            option.setName('party_size')
+                .setDescription('Description of the integer option')
+                .setRequired(false)
+                .setMaxValue(8)
+                )
+        .addStringOption(option =>
+            option.setName('description')
+                .setDescription('More information about the activity')
+                .setRequired(false)
+        )
+        .addStringOption(option =>
+            option.setName('requirements')
+                .setDescription('Requirements for joining the party')
+                .setRequired(false)
+        ),
+            
 
     new SlashCommandBuilder()
         .setName('createevent')
