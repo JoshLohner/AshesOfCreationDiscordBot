@@ -16,18 +16,21 @@
   Purpose: Create a notice for people about events, get a role headcount
   - Event Name (Req)
   - Description (Opt)
+  - Party Size (Opt)
   - Requirements (Opt)
   - Roles (Req) (User Input)
 
 ## PvE Raid Creation
  Purpose: Create 40 person parties for dungeons/world bosses/other events
  - Purpose of Raid (Req)
+ - Party Size (Opt)
  - Requirements (Opt)
  - Roles (Req) (User Input)
 
 ## PvP Raid Creation
    Purpose: Create 40 person parties for pvp
  - Purpose of Raid (Req)
+ - Party Size (Opt)
  - Requirements (Opt)
  - Roles (Req) (User Input)
 

@@ -26,7 +26,7 @@ const commands = [
             )
         .addIntegerOption(option =>
             option.setName('party_size')
-                .setDescription('Description of the integer option')
+                .setDescription('Max Party Size')
                 .setRequired(false)
                 .setMaxValue(8)
                 )
@@ -46,25 +46,76 @@ const commands = [
         .setName('createevent')
         .setDescription('Format')
         .addStringOption(option =>
-            option.setName('option')
-                .setDescription('1')
-                .setRequired(true)),
-
-    new SlashCommandBuilder()
-        .setName('createraidpve')
-        .setDescription('Format')
+            option.setName('event_name')
+                .setDescription('Name of the event')
+                .setRequired(true)
+            )
         .addStringOption(option =>
-            option.setName('option')
-                .setDescription('2')
-                .setRequired(true)),
+            option.setName('description')
+                .setDescription('More information about the event')
+                .setRequired(false)
+            )
+        .addIntegerOption(option =>
+            option.setName('party_size')
+                .setDescription('Max Party Size')
+                .setRequired(false)
+                .setMaxValue(40)
+                )
+        .addStringOption(option =>
+            option.setName('requirements')
+                .setDescription('Minimum requirements for joining party')
+                .setRequired(false)
+            ),
 
     new SlashCommandBuilder()
         .setName('createraidpvp')
         .setDescription('Format')
         .addStringOption(option =>
-            option.setName('option')
-                .setDescription('3')
-                .setRequired(true)),
+            option.setName('raid_name')
+                .setDescription('Name of the raid')
+                .setRequired(true)
+            )
+        .addStringOption(option =>
+            option.setName('description')
+                .setDescription('More information about the pvp raid')
+                .setRequired(false)
+            )
+        .addIntegerOption(option =>
+            option.setName('party_size')
+                .setDescription('Max Party Size')
+                .setRequired(false)
+                .setMaxValue(40)
+                )
+        .addStringOption(option =>
+            option.setName('requirements')
+                .setDescription('Minimum requirements for joining party')
+                .setRequired(false)
+            ),
+
+    new SlashCommandBuilder()
+        .setName('createraidpve')
+        .setDescription('Format')
+        .addStringOption(option =>
+            option.setName('raid_name')
+                .setDescription('Name of the raid')
+                .setRequired(true)
+            )
+        .addStringOption(option =>
+            option.setName('description')
+                .setDescription('More information about the event')
+                .setRequired(false)
+            )
+        .addIntegerOption(option =>
+            option.setName('party_size')
+                .setDescription('Max Party Size')
+                .setRequired(false)
+                .setMaxValue(40)
+                )
+        .addStringOption(option =>
+            option.setName('requirements')
+                .setDescription('Minimum requirements for joining party')
+                .setRequired(false)
+            ),
 
 ].map(command => command.toJSON()); // Convert commands to JSON format
 
