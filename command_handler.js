@@ -1,4 +1,4 @@
-const { Routes, SlashCommandBuilder } = require('discord.js');
+const { Routes, SlashCommandBuilder, } = require('discord.js');
 
 const createPartyCommand = require('./command_folder/createpartycommand.js');
 const createEventCommand = require('./command_folder/createeventcommand.js');
@@ -19,11 +19,11 @@ const commands = [
                 .setDescription('What reason are you making the party?')
                 .setRequired(true)
                 .addChoices(
-                    { name: 'PvP', value: '0' },
-                    { name: 'PvE', value: '1' },
-                    { name: 'PvX', value: '2' },
-                    { name: 'Social', value: '3' },
-                    { name: 'Other', value: '4' }
+                    { name: 'PvP', value: 'PvP' },
+                    { name: 'PvE', value: 'PvE' },
+                    { name: 'PvX', value: 'PvX' },
+                    { name: 'Social', value: 'Social' },
+                    { name: 'Other', value: 'Other' }
                 )
             )
         .addIntegerOption(option =>
