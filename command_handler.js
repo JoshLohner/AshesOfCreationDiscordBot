@@ -1,5 +1,5 @@
 const { Routes, SlashCommandBuilder, } = require('discord.js');
-
+const { handleButtonInteraction } = require('./button_handler.js');
 const createPartyCommand = require('./command_folder/createpartycommand.js');
 const createEventCommand = require('./command_folder/createeventcommand.js');
 const createRaidPvpCommand = require('./command_folder/createraidpvpcommand.js');
@@ -155,25 +155,27 @@ async function resetCommands(rest, clientId, guildId) {
 }
 
 async function handleInteraction(interaction) {
-    if (!interaction.isCommand() && !interaction.isButton()) return;
+    if (interaction.isCommand()) {
+        const { commandName } = interaction;
 
-    const { commandName } = interaction;
-
-    switch (commandName) {
-        case 'createparty':
-            await createPartyCommand.execute(interaction);
-            break;
-        case 'createevent':
-            await createEventCommand.execute(interaction);
-            break;
-        case 'createraidpvp':
-            await createRaidPvpCommand.execute(interaction);
-            break;
-        case 'createraidpve':
-            await createRaidPveCommand.execute(interaction);
-            break;
-        default:
-            console.log(`Unknown command: ${commandName}`);
+        switch (commandName) {
+            case 'createparty':
+                await createPartyCommand.execute(interaction);
+                break;
+            case 'createevent':
+                await createEventCommand.execute(interaction);
+                break;
+            case 'createraidpvp':
+                await createRaidPvpCommand.execute(interaction);
+                break;
+            case 'createraidpve':
+                await createRaidPveCommand.execute(interaction);
+                break;
+            default:
+                console.log(`Unknown command: ${commandName}`);
+        }
+    } else if (interaction.isButton()) {
+        await handleButtonInteraction(interaction);
     }
 }
 
