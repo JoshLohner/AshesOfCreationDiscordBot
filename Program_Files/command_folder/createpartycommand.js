@@ -52,7 +52,6 @@ module.exports = {
                 new ButtonBuilder().setCustomId('button8').setLabel('Tank').setStyle(ButtonStyle.Primary)
             );
 
-        // Close button row, only accessible to the command creator
         const closeButtonRow = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
@@ -61,7 +60,7 @@ module.exports = {
                     .setStyle(ButtonStyle.Danger)
             );
 
-            const updateEmbedWithUserClicks = async () => {
+        const updateEmbedWithUserClicks = async () => {
             const roleNames = {
                 button1: 'Fighter',
                 button2: 'Mage',
@@ -77,7 +76,7 @@ module.exports = {
             for (const [buttonId, users] of Object.entries(buttonClickData)) {
                 for (const user of users) {
                     const member = await interaction.guild.members.fetch(user.id);
-                    const displayName = member.nickname || member.user.username; // Get the nickname or fallback to the username
+                    const displayName = member.nickname || member.user.username;
                     userClicks += `${displayName} has selected ${roleNames[buttonId]}\n`;
                 }
             }
@@ -106,7 +105,6 @@ module.exports = {
             await interaction.update({ embeds: [embed] });
         };
 
-        // Handle close button click
         const handleCloseButtonClick = async (interaction) => {
             if (interaction.user.id !== interaction.user.id) {
                 await interaction.reply({ content: 'Only the creator of this command can close it.', ephemeral: true });
@@ -133,6 +131,22 @@ module.exports = {
         registerButtonHandler('button8', (interaction) => handleButtonClick('button8', interaction));
         registerButtonHandler('close_party', (interaction) => handleCloseButtonClick(interaction));
 
-        await interaction.editReply({ embeds: [embed], components: [firstButtonRow, secondButtonRow, closeButtonRow] });
+        const message = await interaction.editReply({ embeds: [embed], components: [firstButtonRow, secondButtonRow, closeButtonRow] });
+
+        // Set timeout to close the party finder after 1 day (24 hours)
+        setTimeout(async () => {
+            try {
+                // Disable all buttons
+                firstButtonRow.components.forEach(button => button.setDisabled(true));
+                secondButtonRow.components.forEach(button => button.setDisabled(true));
+                closeButtonRow.components.forEach(button => button.setDisabled(true));
+
+                embed.setDescription('Party Finder Closed (Timed Out)');
+
+                await message.edit({ embeds: [embed], components: [firstButtonRow, secondButtonRow, closeButtonRow] });
+            } catch (error) {
+                console.error('Failed to close the party finder:', error);
+            }
+        }, 24 * 60 * 60 * 1000); // 1 day in milliseconds
     },
 };

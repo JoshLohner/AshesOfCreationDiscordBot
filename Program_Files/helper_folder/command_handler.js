@@ -53,16 +53,22 @@ const commands = [
                 .setRequired(true)
             )
         .addStringOption(option =>
+            option.setName('gameplay_type')
+                .setDescription('What reason are you making the party?')
+                .setRequired(true)
+                .addChoices(
+                    { name: 'PvP', value: 'PvP' },
+                    { name: 'PvE', value: 'PvE' },
+                    { name: 'PvX', value: 'PvX' },
+                    { name: 'Social', value: 'Social' },
+                    { name: 'Other', value: 'Other' }
+                )
+            )
+        .addStringOption(option =>
             option.setName('description')
                 .setDescription('More information about the event')
                 .setRequired(false)
             )
-        .addIntegerOption(option =>
-            option.setName('party_size')
-                .setDescription('Max Party Size')
-                .setRequired(false)
-                .setMaxValue(40)
-                )
         .addStringOption(option =>
             option.setName('requirements')
                 .setDescription('Minimum requirements for joining party')

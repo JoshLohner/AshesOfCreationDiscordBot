@@ -11,8 +11,6 @@
 - Requirements (Optional)
 - Roles (Req) (User Input)
 
- Extra: Would be nice to have an accept/deny feature for the party leader
-
 ## Fields for event create (Custom)
 
   Purpose: Create a notice for people about events, get a role headcount
@@ -21,7 +19,8 @@
 - Description (Opt)
 - Party Size (Opt)
 - Requirements (Opt)
-- Roles (Req) (User Input)
+- Role Count (Req) (User Input)
+- Total Headcount
 
 ## PvE Raid Creation
 
