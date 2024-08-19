@@ -52,54 +52,75 @@ module.exports = {
                 new ButtonBuilder().setCustomId('button8').setLabel('Tank').setStyle(ButtonStyle.Primary)
             );
 
-            const updateEmbedWithUserClicks = () => {
-                // Map button IDs to role names
-                const roleNames = {
-                    button1: 'Fighter',
-                    button2: 'Mage',
-                    button3: 'Bard',
-                    button4: 'Rogue',
-                    button5: 'Cleric',
-                    button6: 'Summoner',
-                    button7: 'Ranger',
-                    button8: 'Tank'
-                };
-            
-                // Create a string that lists each user and the role they selected
-                let userClicks = '';
-                for (const [buttonId, users] of Object.entries(buttonClickData)) {
-                    users.forEach(user => {
-                        userClicks += `${user.name} has selected ${roleNames[buttonId]}\n`;
-                    });
-                }
-            
-                // Update the embed with the consolidated information
-                embed.spliceFields(4, embed.data.fields.length - 4);
-                embed.addFields({ name: 'Sign Ups:', value: userClicks || 'No interactions yet', inline: false });
+        // Close button row, only accessible to the command creator
+        const closeButtonRow = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('close_party')
+                    .setLabel('Close')
+                    .setStyle(ButtonStyle.Danger)
+            );
+
+            const updateEmbedWithUserClicks = async () => {
+            const roleNames = {
+                button1: 'Fighter',
+                button2: 'Mage',
+                button3: 'Bard',
+                button4: 'Rogue',
+                button5: 'Cleric',
+                button6: 'Summoner',
+                button7: 'Ranger',
+                button8: 'Tank'
             };
 
-        // Register button handlers with user tracking and embed updating
+            let userClicks = '';
+            for (const [buttonId, users] of Object.entries(buttonClickData)) {
+                for (const user of users) {
+                    const member = await interaction.guild.members.fetch(user.id);
+                    const displayName = member.nickname || member.user.username; // Get the nickname or fallback to the username
+                    userClicks += `${displayName} has selected ${roleNames[buttonId]}\n`;
+                }
+            }
+
+            embed.spliceFields(4, embed.data.fields.length - 4);
+            embed.addFields({ name: 'Sign Ups:', value: userClicks || 'No interactions yet', inline: false });
+        };
+
         const handleButtonClick = async (buttonId, interaction) => {
             const user = interaction.user;
             const userIndex = buttonClickData[buttonId].findIndex(u => u.id === user.id);
 
             if (userIndex !== -1) {
-                // If the user has already clicked this button, remove them
                 buttonClickData[buttonId].splice(userIndex, 1);
             } else {
-                // Remove the user from any other button they've clicked
                 for (const [id, users] of Object.entries(buttonClickData)) {
                     const idx = users.findIndex(u => u.id === user.id);
                     if (idx !== -1) {
                         users.splice(idx, 1);
                     }
                 }
-                // Add the user to the newly clicked button
                 buttonClickData[buttonId].push({ id: user.id, name: user.username });
             }
 
             updateEmbedWithUserClicks();
             await interaction.update({ embeds: [embed] });
+        };
+
+        // Handle close button click
+        const handleCloseButtonClick = async (interaction) => {
+            if (interaction.user.id !== interaction.user.id) {
+                await interaction.reply({ content: 'Only the creator of this command can close it.', ephemeral: true });
+                return;
+            }
+
+            // Disable all buttons
+            firstButtonRow.components.forEach(button => button.setDisabled(true));
+            secondButtonRow.components.forEach(button => button.setDisabled(true));
+            closeButtonRow.components.forEach(button => button.setDisabled(true));
+
+            embed.setDescription('Party Finder Closed');
+
+            await interaction.update({ embeds: [embed], components: [firstButtonRow, secondButtonRow, closeButtonRow] });
         };
 
         registerButtonHandler('button1', (interaction) => handleButtonClick('button1', interaction));
@@ -110,7 +131,8 @@ module.exports = {
         registerButtonHandler('button6', (interaction) => handleButtonClick('button6', interaction));
         registerButtonHandler('button7', (interaction) => handleButtonClick('button7', interaction));
         registerButtonHandler('button8', (interaction) => handleButtonClick('button8', interaction));
+        registerButtonHandler('close_party', (interaction) => handleCloseButtonClick(interaction));
 
-        await interaction.editReply({ embeds: [embed], components: [firstButtonRow, secondButtonRow] });
+        await interaction.editReply({ embeds: [embed], components: [firstButtonRow, secondButtonRow, closeButtonRow] });
     },
 };
