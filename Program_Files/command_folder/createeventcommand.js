@@ -55,7 +55,7 @@ module.exports = {
                 new ButtonBuilder().setCustomId('mention_participants').setLabel('Mention Participants').setStyle(ButtonStyle.Secondary)
             );
 
-        const updateEmbedWithUserClicks = async () => {
+        const updateEmbedWithUserClicks = () => {
             const roleNames = {
                 button1: 'Fighter',
                 button2: 'Mage',
@@ -73,30 +73,36 @@ module.exports = {
             for (const [buttonId, users] of Object.entries(buttonClickData)) {
                 const userCount = users.size;
                 if (userCount > 0) {
-                    signUpDetails += `${roleNames[buttonId]}: ${userCount} participants\n`;
+                    signUpDetails += `${roleNames[buttonId]}: ${userCount} participant${userCount > 1 ? 's' : ''}\n`;
                     totalCount += userCount;
                 }
             }
 
             signUpDetails += `\n**Total Participants:** ${totalCount}`;
 
-            embed.spliceFields(4, embed.data.fields.length - 4);
+            // Remove existing signup fields to avoid duplication
+            embed.spliceFields(3, embed.data.fields.length - 3);
             embed.addFields({ name: 'Sign Ups:', value: signUpDetails || 'No interactions yet', inline: false });
         };
 
         const handleButtonClick = async (buttonId, interaction) => {
             const user = interaction.user;
 
+            // Toggle user's signup for the selected role
             if (buttonClickData[buttonId].has(user.id)) {
                 buttonClickData[buttonId].delete(user.id);
             } else {
+                // Remove user from other roles before adding to the selected one
                 for (const users of Object.values(buttonClickData)) {
                     users.delete(user.id);
                 }
                 buttonClickData[buttonId].add(user.id);
             }
 
+            // Update the embed based on the current sign-up status
             updateEmbedWithUserClicks();
+
+            // Update the interaction with the new embed
             await interaction.update({ embeds: [embed] });
         };
 
@@ -106,6 +112,7 @@ module.exports = {
                 return;
             }
 
+            // Disable all buttons
             firstButtonRow.components.forEach(button => button.setDisabled(true));
             secondButtonRow.components.forEach(button => button.setDisabled(true));
             controlButtonRow.components.forEach(button => button.setDisabled(true));
@@ -131,6 +138,7 @@ module.exports = {
             }
         };
 
+        // Register button handlers
         registerButtonHandler('button1', (interaction) => handleButtonClick('button1', interaction));
         registerButtonHandler('button2', (interaction) => handleButtonClick('button2', interaction));
         registerButtonHandler('button3', (interaction) => handleButtonClick('button3', interaction));
@@ -142,11 +150,13 @@ module.exports = {
         registerButtonHandler('close_party', (interaction) => handleCloseButtonClick(interaction));
         registerButtonHandler('mention_participants', (interaction) => handleMentionParticipantsClick(interaction));
 
-        const message = await interaction.editReply({ embeds: [embed], components: [firstButtonRow, secondButtonRow, controlButtonRow] });
+        // Send the initial reply with the embed and buttons
+        await interaction.editReply({ embeds: [embed], components: [firstButtonRow, secondButtonRow, controlButtonRow] });
 
+        // Set a timeout to delete the message after 1 week
         setTimeout(async () => {
             try {
-                await message.delete();
+                await interaction.deleteReply();
             } catch (error) {
                 console.error('Failed to delete the message:', error);
             }
