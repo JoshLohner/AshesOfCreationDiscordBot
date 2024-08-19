@@ -38,33 +38,45 @@ module.exports = {
 
         const firstButtonRow = new ActionRowBuilder()
             .addComponents(
-                new ButtonBuilder().setCustomId('button1').setLabel('Button 1').setStyle(ButtonStyle.Primary),
-                new ButtonBuilder().setCustomId('button2').setLabel('Button 2').setStyle(ButtonStyle.Primary),
-                new ButtonBuilder().setCustomId('button3').setLabel('Button 3').setStyle(ButtonStyle.Primary),
-                new ButtonBuilder().setCustomId('button4').setLabel('Button 4').setStyle(ButtonStyle.Primary)
+                new ButtonBuilder().setCustomId('button1').setLabel('Fighter').setStyle(ButtonStyle.Primary),
+                new ButtonBuilder().setCustomId('button2').setLabel('Mage').setStyle(ButtonStyle.Primary),
+                new ButtonBuilder().setCustomId('button3').setLabel('Bard').setStyle(ButtonStyle.Primary),
+                new ButtonBuilder().setCustomId('button4').setLabel('Rogue').setStyle(ButtonStyle.Primary)
             );
 
         const secondButtonRow = new ActionRowBuilder()
             .addComponents(
-                new ButtonBuilder().setCustomId('button5').setLabel('Button 5').setStyle(ButtonStyle.Primary),
-                new ButtonBuilder().setCustomId('button6').setLabel('Button 6').setStyle(ButtonStyle.Primary),
-                new ButtonBuilder().setCustomId('button7').setLabel('Button 7').setStyle(ButtonStyle.Primary),
-                new ButtonBuilder().setCustomId('button8').setLabel('Button 8').setStyle(ButtonStyle.Primary)
+                new ButtonBuilder().setCustomId('button5').setLabel('Cleric').setStyle(ButtonStyle.Primary),
+                new ButtonBuilder().setCustomId('button6').setLabel('Summoner').setStyle(ButtonStyle.Primary),
+                new ButtonBuilder().setCustomId('button7').setLabel('Ranger').setStyle(ButtonStyle.Primary),
+                new ButtonBuilder().setCustomId('button8').setLabel('Tank').setStyle(ButtonStyle.Primary)
             );
 
-        const updateEmbedWithUserClicks = () => {
-            // Create a string that lists each user and the button they clicked
-            let userClicks = '';
-            for (const [buttonId, users] of Object.entries(buttonClickData)) {
-                users.forEach(user => {
-                    userClicks += `${user.name} clicked ${buttonId}\n`;
-                });
-            }
-
-            // Update the embed with the consolidated information
-            embed.spliceFields(4, embed.data.fields.length - 4);
-            embed.addFields({ name: 'User Interactions', value: userClicks || 'No interactions yet', inline: false });
-        };
+            const updateEmbedWithUserClicks = () => {
+                // Map button IDs to role names
+                const roleNames = {
+                    button1: 'Fighter',
+                    button2: 'Mage',
+                    button3: 'Bard',
+                    button4: 'Rogue',
+                    button5: 'Cleric',
+                    button6: 'Summoner',
+                    button7: 'Ranger',
+                    button8: 'Tank'
+                };
+            
+                // Create a string that lists each user and the role they selected
+                let userClicks = '';
+                for (const [buttonId, users] of Object.entries(buttonClickData)) {
+                    users.forEach(user => {
+                        userClicks += `${user.name} has selected ${roleNames[buttonId]}\n`;
+                    });
+                }
+            
+                // Update the embed with the consolidated information
+                embed.spliceFields(4, embed.data.fields.length - 4);
+                embed.addFields({ name: 'Sign Ups:', value: userClicks || 'No interactions yet', inline: false });
+            };
 
         // Register button handlers with user tracking and embed updating
         const handleButtonClick = async (buttonId, interaction) => {
