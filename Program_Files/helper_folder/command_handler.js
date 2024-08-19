@@ -1,9 +1,9 @@
 const { Routes, SlashCommandBuilder, } = require('discord.js');
 const { handleButtonInteraction } = require('./button_handler.js');
-const createPartyCommand = require('./command_folder/createpartycommand.js');
-const createEventCommand = require('./command_folder/createeventcommand.js');
-const createRaidPvpCommand = require('./command_folder/createraidpvpcommand.js');
-const createRaidPveCommand = require('./command_folder/createraidpvecommand.js');
+const createPartyCommand = require('../command_folder/createpartycommand.js');
+const createEventCommand = require('../command_folder/createeventcommand.js');
+const createRaidPvpCommand = require('../command_folder/createraidpvpcommand.js');
+const createRaidPveCommand = require('../command_folder/createraidpvecommand.js');
 
 const commands = [
     new SlashCommandBuilder()

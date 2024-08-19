@@ -3,7 +3,7 @@ require('dotenv').config();
 
 // Import necessary classes and functions from discord.js and custom commands module
 const { Client, GatewayIntentBits, REST, Routes } = require('discord.js');
-const { resetCommands, handleInteraction } = require('./command_handler');
+const { resetCommands, handleInteraction } = require('./Program_Files/helper_folder/command_handler');
 
 // Create a new Discord client instance with specified intents
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });

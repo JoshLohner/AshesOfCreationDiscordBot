@@ -1,5 +1,5 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { registerButtonHandler } = require('../button_handler');
+const { registerButtonHandler } = require('../helper_folder/button_handler');
 
 // Object to store user data for each button
 const buttonClickData = {
