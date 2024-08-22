@@ -2,8 +2,7 @@ const { Routes, SlashCommandBuilder, } = require('discord.js');
 const { handleButtonInteraction } = require('./button_handler.js');
 const createPartyCommand = require('../command_folder/createpartycommand.js');
 const createEventCommand = require('../command_folder/createeventcommand.js');
-const createRaidPvpCommand = require('../command_folder/createraidpvpcommand.js');
-const createRaidPveCommand = require('../command_folder/createraidpvecommand.js');
+const createRaidPvpCommand = require('../command_folder/createraidcommand.js');
 
 const commands = [
     new SlashCommandBuilder()
@@ -76,54 +75,43 @@ const commands = [
             ),
 
     new SlashCommandBuilder()
-        .setName('createraidpvp')
+        .setName('createraid')
         .setDescription('Format')
         .addStringOption(option =>
             option.setName('raid_name')
-                .setDescription('Name of the raid')
+                .setDescription('What reason are you making the raid')
                 .setRequired(true)
             )
         .addStringOption(option =>
-            option.setName('description')
-                .setDescription('More information about the pvp raid')
-                .setRequired(false)
+            option.setName('gameplay_type')
+                .setDescription('What reason are you making the raid?')
+                .setRequired(true)
+                .addChoices(
+                    { name: 'PvP', value: 'PvP' },
+                    { name: 'PvE', value: 'PvE' },
+                    { name: 'PvX', value: 'PvX' },
+                    { name: 'Social', value: 'Social' },
+                    { name: 'Other', value: 'Other' }
+                )
             )
         .addIntegerOption(option =>
-            option.setName('party_size')
-                .setDescription('Max Party Size')
+            option.setName('raid_size')
+                .setDescription('Max Raid Size: 40')
                 .setRequired(false)
                 .setMaxValue(40)
                 )
         .addStringOption(option =>
-            option.setName('requirements')
-                .setDescription('Minimum requirements for joining party')
+            option.setName('description')
+                .setDescription('More information about the activity')
                 .setRequired(false)
-            ),
+        )
+        .addStringOption(option =>
+            option.setName('requirements')
+                .setDescription('Requirements for joining the raid')
+                .setRequired(false)
+        ),
 
-    new SlashCommandBuilder()
-        .setName('createraidpve')
-        .setDescription('Format')
-        .addStringOption(option =>
-            option.setName('raid_name')
-                .setDescription('Name of the raid')
-                .setRequired(true)
-            )
-        .addStringOption(option =>
-            option.setName('description')
-                .setDescription('More information about the event')
-                .setRequired(false)
-            )
-        .addIntegerOption(option =>
-            option.setName('party_size')
-                .setDescription('Max Party Size')
-                .setRequired(false)
-                .setMaxValue(40)
-                )
-        .addStringOption(option =>
-            option.setName('requirements')
-                .setDescription('Minimum requirements for joining party')
-                .setRequired(false)
-            ),
+    
 
 ].map(command => command.toJSON()); // Convert commands to JSON format
 
@@ -171,11 +159,8 @@ async function handleInteraction(interaction) {
             case 'createevent':
                 await createEventCommand.execute(interaction);
                 break;
-            case 'createraidpvp':
+            case 'createraid':
                 await createRaidPvpCommand.execute(interaction);
-                break;
-            case 'createraidpve':
-                await createRaidPveCommand.execute(interaction);
                 break;
             default:
                 console.log(`Unknown command: ${commandName}`);
