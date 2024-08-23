@@ -4,17 +4,17 @@
 
 ## Current Goal
 
-- Party Creator/Finder
+- Player market/auction
 
 ## Finished Goals
 
 - Bot has basic discord functionality
 
+- Party Creator/Finder (For Now)
+
 ## Future Goal
 
 - Link with the Ashes Wiki (<https://ashesofcreation.wiki/Special:ApiSandbox>)
-
-- Player market/auction
 
 ### Links
 
